@@ -91,6 +91,18 @@ func (a *Agent) SetMaxBufferSize(maxbufferSize int) {
 	a.maxbufferSize = maxbufferSize
 }
 
+func (a *Agent) MaxQueueSize() int {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.maxQueueSize
+}
+
+func (a *Agent) SetMaxQueueSize(maxQueueSize int) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.maxQueueSize = maxQueueSize
+}
+
 func (a *Agent) Open() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
