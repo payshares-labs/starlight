@@ -239,6 +239,7 @@ func (a *Agent) hello() error {
 	if err != nil {
 		return fmt.Errorf("sending hello: %w", err)
 	}
+	a.connFlush()
 	return nil
 }
 
@@ -307,6 +308,7 @@ func (a *Agent) Open(asset state.Asset) error {
 	if err != nil {
 		return fmt.Errorf("sending open: %w", err)
 	}
+	a.connFlush()
 
 	return nil
 }
@@ -358,6 +360,7 @@ func (a *Agent) PaymentWithMemo(paymentAmount int64, memo string) error {
 	if err != nil {
 		return fmt.Errorf("sending payment: %w", err)
 	}
+	a.connFlush()
 
 	return nil
 }
@@ -410,6 +413,7 @@ func (a *Agent) DeclareClose() error {
 	if err != nil {
 		return fmt.Errorf("error: sending the close proposal: %w", err)
 	}
+	a.connFlush()
 
 	return nil
 }
@@ -556,6 +560,7 @@ func (a *Agent) handleOpenRequest(m msg.Message, send *msg.Encoder) error {
 	if err != nil {
 		return fmt.Errorf("encoding open to send back: %w", err)
 	}
+	a.connFlush()
 	return nil
 }
 
@@ -619,6 +624,7 @@ func (a *Agent) handlePaymentRequest(m msg.Message, send *msg.Encoder) error {
 	if err != nil {
 		return fmt.Errorf("encoding payment to send back: %w", err)
 	}
+	a.connFlush()
 	return nil
 }
 
@@ -667,6 +673,7 @@ func (a *Agent) handleCloseRequest(m msg.Message, send *msg.Encoder) error {
 	if err != nil {
 		return fmt.Errorf("encoding close to send back: %v\n", err)
 	}
+	a.connFlush()
 	fmt.Fprintln(a.logWriter, "close ready")
 
 	// Submit the close immediately since it is valid immediately.

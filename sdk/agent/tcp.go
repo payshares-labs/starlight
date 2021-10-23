@@ -1,9 +1,16 @@
 package agent
 
 import (
+	"compress/gzip"
 	"fmt"
+	"io"
 	"net"
 )
+
+type readWriter struct {
+	io.Reader
+	io.Writer
+}
 
 func (a *Agent) ServeTCP(addr string) error {
 	if a.conn != nil {
@@ -18,7 +25,20 @@ func (a *Agent) ServeTCP(addr string) error {
 		return fmt.Errorf("accepting incoming connection: %w", err)
 	}
 	fmt.Fprintf(a.logWriter, "accepted connection from %v\n", conn.RemoteAddr())
-	a.conn = conn
+
+	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	if err != nil {
+		return fmt.Errorf("creating gzip writer: %w", err)
+	}
+	zr, err := gzip.NewReader(conn)
+	if err != nil {
+		return fmt.Errorf("creating gzip reader: %w", err)
+	}
+	a.conn = readWriter{
+		Reader: zr,
+		Writer: zw,
+	}
+
 	err = a.hello()
 	if err != nil {
 		return fmt.Errorf("sending hello: %w", err)
@@ -44,4 +64,13 @@ func (a *Agent) ConnectTCP(addr string) error {
 	}
 	go a.receiveLoop()
 	return nil
+}
+
+func (a *Agent) connFlush() {
+	if flusher, ok := a.conn.(interface{ Flush() error }); ok {
+		err := flusher.Flush()
+		if err != nil {
+			panic(err)
+		}
+	}
 }
