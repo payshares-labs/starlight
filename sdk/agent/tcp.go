@@ -7,9 +7,29 @@ import (
 	"net"
 )
 
+type readLogger struct {
+	io.Reader
+}
+
+func (r readLogger) Read(b []byte) (int, error) {
+	n, err := r.Reader.Read(b)
+	fmt.Printf("read: %d / %#v\n", n, err)
+	return n, err
+}
+
 type readWriter struct {
 	io.Reader
 	io.Writer
+}
+
+func (rw readWriter) Flush() error {
+	if flusher, ok := rw.Writer.(interface{ Flush() error }); ok {
+		err := flusher.Flush()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (a *Agent) ServeTCP(addr string) error {
@@ -30,8 +50,9 @@ func (a *Agent) ServeTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
-	zr, err := gzip.NewReader(conn)
+	zr, err := gzip.NewReader(readLogger{conn})
 	if err != nil {
+		fmt.Printf("error--> %T / %#v", err, err)
 		return fmt.Errorf("creating gzip reader: %w", err)
 	}
 	a.conn = readWriter{
