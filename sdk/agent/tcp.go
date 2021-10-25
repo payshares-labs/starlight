@@ -85,10 +85,12 @@ func (a *Agent) ConnectTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
+	fmt.Println("setup reader 1")
 	zr, err := gzip.NewReader(readLogger{conn})
 	if err != nil {
 		return fmt.Errorf("creating gzip reader: %w", err)
 	}
+	fmt.Println("setup reader 2")
 	a.conn = readWriter{
 		Reader: zr,
 		Writer: zw,

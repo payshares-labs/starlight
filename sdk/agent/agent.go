@@ -225,6 +225,7 @@ func (a *Agent) buildSnapshot() Snapshot {
 
 // hello sends a hello message to the remote participant over the connection.
 func (a *Agent) hello() error {
+	fmt.Println("hello() 0")
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
