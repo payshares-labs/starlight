@@ -78,7 +78,20 @@ func (a *Agent) ConnectTCP(addr string) error {
 		return fmt.Errorf("connecting to %s: %w", addr, err)
 	}
 	fmt.Fprintf(a.logWriter, "connected to %v\n", conn.RemoteAddr())
-	a.conn = conn
+
+	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	if err != nil {
+		return fmt.Errorf("creating gzip writer: %w", err)
+	}
+	zr, err := gzip.NewReader(readLogger{conn})
+	if err != nil {
+		return fmt.Errorf("creating gzip reader: %w", err)
+	}
+	a.conn = readWriter{
+		Reader: zr,
+		Writer: zw,
+	}
+
 	err = a.hello()
 	if err != nil {
 		return fmt.Errorf("sending hello: %w", err)
