@@ -23,7 +23,9 @@ type readWriter struct {
 }
 
 func (rw readWriter) Flush() error {
+	fmt.Println("FLUSH readWriter outside")
 	if flusher, ok := rw.Writer.(interface{ Flush() error }); ok {
+		fmt.Println("FLUSH readWriter inside")
 		err := flusher.Flush()
 		if err != nil {
 			return err
@@ -101,7 +103,9 @@ func (a *Agent) ConnectTCP(addr string) error {
 }
 
 func (a *Agent) connFlush() {
+	fmt.Println("FLUSH agent outside")
 	if flusher, ok := a.conn.(interface{ Flush() error }); ok {
+		fmt.Println("FLUSH agent inside")
 		err := flusher.Flush()
 		if err != nil {
 			panic(err)
