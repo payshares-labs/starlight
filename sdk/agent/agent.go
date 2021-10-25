@@ -228,7 +228,9 @@ func (a *Agent) hello() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
+	fmt.Println("hello() 1")
 	enc := msg.NewEncoder(io.MultiWriter(a.conn, a.logWriter))
+	fmt.Println("hello() 2")
 	err := enc.Encode(msg.Message{
 		Type: msg.TypeHello,
 		Hello: &msg.Hello{
@@ -236,6 +238,7 @@ func (a *Agent) hello() error {
 			Signer:        *a.escrowAccountSigner.FromAddress(),
 		},
 	})
+	fmt.Println("hello() 3")
 	if err != nil {
 		return fmt.Errorf("sending hello: %w", err)
 	}
