@@ -7,14 +7,50 @@ import (
 	"net"
 )
 
-type readLogger struct {
-	io.Reader
+// type bufferedGZIPReader struct {
+// 	bufioReader *bufio.Reader
+// 	gzipReader  *gzip.Reader
+// }
+
+// func newBufferedGZIPReader(r io.Reader) *bufferedGZIPReader {
+// 	return &bufferedGZIPReader{
+// 		bufio: bufio.NewReaderSize(r, 10),
+// 	}
+// }
+
+// func (r bufferedGZIPReader) Read(b []byte) (int, error) {
+// 	if r.gzipReader != nil {
+// 		return r.gzipReader.Read(b)
+// 	}
+// 	b, err := r.bufioReader.Peek(10)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	if len(b) == 10 {
+
+// 	}
+// }
+
+type lazyReader struct {
+	makeReader func() (io.Reader, error)
+	reader     io.Reader
 }
 
-func (r readLogger) Read(b []byte) (int, error) {
-	n, err := r.Reader.Read(b)
-	fmt.Printf("read: %d / %#v\n", n, err)
-	return n, err
+func newLazyReader(makeReader func() (io.Reader, error)) *lazyReader {
+	return &lazyReader{
+		makeReader: makeReader,
+	}
+}
+
+func (r lazyReader) Read(b []byte) (int, error) {
+	if r.reader == nil {
+		reader, err := r.makeReader()
+		if err != nil {
+			return 0, err
+		}
+		r.reader = reader
+	}
+	return r.reader.Read(b)
 }
 
 type readWriter struct {
@@ -52,13 +88,11 @@ func (a *Agent) ServeTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
-	zr, err := gzip.NewReader(readLogger{conn})
-	if err != nil {
-		fmt.Printf("error--> %T / %#v", err, err)
-		return fmt.Errorf("creating gzip reader: %w", err)
-	}
+	r := newLazyReader(func() (io.Reader, error) {
+		return gzip.NewReader(conn)
+	})
 	a.conn = readWriter{
-		Reader: zr,
+		Reader: r,
 		Writer: zw,
 	}
 
@@ -85,14 +119,11 @@ func (a *Agent) ConnectTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
-	fmt.Println("setup reader 1")
-	zr, err := gzip.NewReader(readLogger{conn})
-	if err != nil {
-		return fmt.Errorf("creating gzip reader: %w", err)
-	}
-	fmt.Println("setup reader 2")
+	r := newLazyReader(func() (io.Reader, error) {
+		return gzip.NewReader(conn)
+	})
 	a.conn = readWriter{
-		Reader: zr,
+		Reader: r,
 		Writer: zw,
 	}
 
