@@ -55,7 +55,7 @@ func (a *Agent) ConnectTCP(addr string) error {
 	fmt.Fprintf(a.logWriter, "connected to %v\n", conn.RemoteAddr())
 
 	// zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
-	zw, err := flate.NewWriter(conn, 9)
+	zw, err := flate.NewWriter(conn, flate.BestSpeed)
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
