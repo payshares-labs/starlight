@@ -449,6 +449,7 @@ func (a *Agent) receive() error {
 	recv := msg.NewDecoder(io.TeeReader(a.conn, a.logWriter))
 	send := msg.NewEncoder(io.MultiWriter(a.conn, a.logWriter))
 	m := msg.Message{}
+	rc.Count = 0
 	err := recv.Decode(&m)
 	if err == io.EOF {
 		return err
