@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"compress/flate"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -59,12 +60,14 @@ func (a *Agent) ServeTCP(addr string) error {
 	}
 	fmt.Fprintf(a.logWriter, "accepted connection from %v\n", conn.RemoteAddr())
 
-	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	// zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	zw, err := flate.NewWriter(conn, 9)
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(conn)
+		// return gzip.NewReader(conn)
+		return flate.NewReader(conn), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
@@ -90,12 +93,14 @@ func (a *Agent) ConnectTCP(addr string) error {
 	}
 	fmt.Fprintf(a.logWriter, "connected to %v\n", conn.RemoteAddr())
 
-	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	// zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	zw, err := flate.NewWriter(conn, 9)
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(conn)
+		// return gzip.NewReader(conn)
+		return flate.NewReader(conn), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
