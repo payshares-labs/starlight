@@ -1,6 +1,7 @@
 package bufferedagent
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 
@@ -14,7 +15,8 @@ type bufferedPaymentsMemo struct {
 
 func (m bufferedPaymentsMemo) String() string {
 	sb := strings.Builder{}
-	enc := xdr.NewEncoder(&sb)
+	b64 := base64.NewEncoder(base64.StdEncoding, &sb)
+	enc := xdr.NewEncoder(b64)
 	_, err := enc.Encode(m)
 	if err != nil {
 		panic(fmt.Errorf("encoding buffered payments memo as json: %w", err))
@@ -24,7 +26,8 @@ func (m bufferedPaymentsMemo) String() string {
 
 func parseBufferedPaymentMemo(memo string) (bufferedPaymentsMemo, error) {
 	r := strings.NewReader(memo)
-	dec := xdr.NewDecoder(r)
+	b64 := base64.NewDecoder(base64.StdEncoding, r)
+	dec := xdr.NewDecoder(b64)
 	m := bufferedPaymentsMemo{}
 	_, err := dec.Decode(&m)
 	if err != nil {
