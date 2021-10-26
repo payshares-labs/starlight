@@ -7,30 +7,6 @@ import (
 	"net"
 )
 
-// type bufferedGZIPReader struct {
-// 	bufioReader *bufio.Reader
-// 	gzipReader  *gzip.Reader
-// }
-
-// func newBufferedGZIPReader(r io.Reader) *bufferedGZIPReader {
-// 	return &bufferedGZIPReader{
-// 		bufio: bufio.NewReaderSize(r, 10),
-// 	}
-// }
-
-// func (r bufferedGZIPReader) Read(b []byte) (int, error) {
-// 	if r.gzipReader != nil {
-// 		return r.gzipReader.Read(b)
-// 	}
-// 	b, err := r.bufioReader.Peek(10)
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	if len(b) == 10 {
-
-// 	}
-// }
-
 type lazyReader struct {
 	makeReader func() (io.Reader, error)
 	reader     io.Reader
