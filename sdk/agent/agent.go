@@ -445,8 +445,20 @@ func (a *Agent) Close() error {
 	return nil
 }
 
+type readCounter struct {
+	Reader io.Reader
+	Count  int
+}
+
+func (r *readCounter) Read(b []byte) (int, error) {
+	n, err := r.Reader.Read(b)
+	r.Count += n
+	return n, err
+}
+
 func (a *Agent) receive() error {
-	recv := msg.NewDecoder(io.TeeReader(a.conn, a.logWriter))
+	rc := readCounter{Reader: a.conn}
+	recv := msg.NewDecoder(io.TeeReader(&rc, a.logWriter))
 	send := msg.NewEncoder(io.MultiWriter(a.conn, a.logWriter))
 	m := msg.Message{}
 	err := recv.Decode(&m)
@@ -456,6 +468,7 @@ func (a *Agent) receive() error {
 	if err != nil {
 		return fmt.Errorf("reading and decoding: %v", err)
 	}
+	fmt.Println("message size:", rc.Count, "bytes")
 	err = a.handle(m, send)
 	if err != nil {
 		return fmt.Errorf("handling message: %v", err)
