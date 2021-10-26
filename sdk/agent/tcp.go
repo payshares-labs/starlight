@@ -2,7 +2,6 @@ package agent
 
 import (
 	"compress/flate"
-	"compress/gzip"
 	"fmt"
 	"io"
 	"net"
@@ -19,7 +18,7 @@ func newLazyReader(makeReader func() (io.Reader, error)) *lazyReader {
 	}
 }
 
-func (r lazyReader) Read(b []byte) (int, error) {
+func (r *lazyReader) Read(b []byte) (int, error) {
 	if r.reader == nil {
 		reader, err := r.makeReader()
 		if err != nil {
