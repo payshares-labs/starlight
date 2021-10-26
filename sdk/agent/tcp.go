@@ -26,9 +26,10 @@ func (a *Agent) ServeTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
+	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
 		// return gzip.NewReader(conn)
-		return flate.NewReader(conn), nil
+		return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
@@ -59,9 +60,10 @@ func (a *Agent) ConnectTCP(addr string) error {
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
+	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
 		// return gzip.NewReader(conn)
-		return flate.NewReader(conn), nil
+		return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
@@ -74,6 +76,19 @@ func (a *Agent) ConnectTCP(addr string) error {
 	}
 	go a.receiveLoop()
 	return nil
+}
+
+var rc *readCounter
+
+type readCounter struct {
+	Reader io.Reader
+	Count  int
+}
+
+func (r *readCounter) Read(b []byte) (int, error) {
+	n, err := r.Reader.Read(b)
+	r.Count += n
+	return n, err
 }
 
 type lazyReader struct {
