@@ -36,6 +36,7 @@ type readWriter struct {
 
 func (rw readWriter) Flush() error {
 	if flusher, ok := rw.Writer.(interface{ Flush() error }); ok {
+		fmt.Println("FLUSH")
 		err := flusher.Flush()
 		if err != nil {
 			return err

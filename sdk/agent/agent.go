@@ -553,13 +553,16 @@ func (a *Agent) handleOpenRequest(m msg.Message, send *msg.Encoder) error {
 		return fmt.Errorf("confirming open: %w", err)
 	}
 	fmt.Fprintf(a.logWriter, "open authorized\n")
+	fmt.Println("SENDING OPEN")
 	err = send.Encode(msg.Message{
 		Type:         msg.TypeOpenResponse,
 		OpenResponse: &open.Envelope,
 	})
+	fmt.Println("SENT OPEN")
 	if err != nil {
 		return fmt.Errorf("encoding open to send back: %w", err)
 	}
+	fmt.Println("FLUSHING OPEN")
 	a.connFlush()
 	return nil
 }
