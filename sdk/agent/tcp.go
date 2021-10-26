@@ -7,43 +7,6 @@ import (
 	"net"
 )
 
-type lazyReader struct {
-	makeReader func() (io.Reader, error)
-	reader     io.Reader
-}
-
-func newLazyReader(makeReader func() (io.Reader, error)) *lazyReader {
-	return &lazyReader{
-		makeReader: makeReader,
-	}
-}
-
-func (r *lazyReader) Read(b []byte) (int, error) {
-	if r.reader == nil {
-		reader, err := r.makeReader()
-		if err != nil {
-			return 0, err
-		}
-		r.reader = reader
-	}
-	return r.reader.Read(b)
-}
-
-type readWriter struct {
-	io.Reader
-	io.Writer
-}
-
-func (rw readWriter) Flush() error {
-	if flusher, ok := rw.Writer.(interface{ Flush() error }); ok {
-		err := flusher.Flush()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (a *Agent) ServeTCP(addr string) error {
 	if a.conn != nil {
 		return fmt.Errorf("already connected")
@@ -110,6 +73,43 @@ func (a *Agent) ConnectTCP(addr string) error {
 		return fmt.Errorf("sending hello: %w", err)
 	}
 	go a.receiveLoop()
+	return nil
+}
+
+type lazyReader struct {
+	makeReader func() (io.Reader, error)
+	reader     io.Reader
+}
+
+func newLazyReader(makeReader func() (io.Reader, error)) *lazyReader {
+	return &lazyReader{
+		makeReader: makeReader,
+	}
+}
+
+func (r *lazyReader) Read(b []byte) (int, error) {
+	if r.reader == nil {
+		reader, err := r.makeReader()
+		if err != nil {
+			return 0, err
+		}
+		r.reader = reader
+	}
+	return r.reader.Read(b)
+}
+
+type readWriter struct {
+	io.Reader
+	io.Writer
+}
+
+func (rw readWriter) Flush() error {
+	if flusher, ok := rw.Writer.(interface{ Flush() error }); ok {
+		err := flusher.Flush()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
