@@ -1,9 +1,9 @@
 package msg
 
 import (
-	"encoding/json"
 	"io"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/stellar/experimental-payment-channels/sdk/state"
 	"github.com/stellar/go/keypair"
 )
@@ -40,14 +40,14 @@ type Hello struct {
 	Signer        keypair.FromAddress
 }
 
-type Encoder = json.Encoder
+type Encoder = jsoniter.Encoder
 
 func NewEncoder(w io.Writer) *Encoder {
-	return json.NewEncoder(w)
+	return jsoniter.NewEncoder(w)
 }
 
-type Decoder = json.Decoder
+type Decoder = jsoniter.Decoder
 
 func NewDecoder(r io.Reader) *Decoder {
-	return json.NewDecoder(r)
+	return jsoniter.NewDecoder(r)
 }

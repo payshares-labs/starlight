@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/google/gofuzz v1.2.0
 	github.com/google/uuid v1.2.0
+	github.com/json-iterator/go v1.1.12
 	github.com/rs/cors v0.0.0-20160617231935-a62a804a8a00
 	github.com/stellar/go v0.0.0-20211019190220-c47964999c2a
 	github.com/stretchr/objx v0.3.0 // indirect
@@ -20,6 +21,8 @@ require (
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
 	github.com/manucorporat/sse v0.0.0-20160126180136-ee05b128a739 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
+	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rs/xhandler v0.0.0-20160618193221-ed27b6fd6521 // indirect
