@@ -3,7 +3,6 @@ module github.com/stellar/experimental-payment-channels/sdk
 go 1.17
 
 require (
-	github.com/andybalholm/brotli v1.0.3
 	github.com/google/gofuzz v1.2.0
 	github.com/google/uuid v1.2.0
 	github.com/rs/cors v0.0.0-20160617231935-a62a804a8a00
