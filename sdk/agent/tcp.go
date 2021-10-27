@@ -25,16 +25,15 @@ func (a *Agent) ServeTCP(addr string) error {
 	// if err != nil {
 	// 	return fmt.Errorf("creating gzip writer: %w", err)
 	// }
-	// rc = &readCounter{Reader: conn}
+	rc = &readCounter{Reader: conn}
 	// r := newLazyReader(func() (io.Reader, error) {
 	// 	// return gzip.NewReader(rc)
 	// 	return flate.NewReader(rc), nil
 	// })
-	// a.conn = readWriter{
-	// 	Reader: r,
-	// 	Writer: zw,
-	// }
-	a.conn = conn
+	a.conn = readWriter{
+		Reader: rc,
+		Writer: conn,
+	}
 
 	err = a.hello()
 	if err != nil {
@@ -60,16 +59,15 @@ func (a *Agent) ConnectTCP(addr string) error {
 	// if err != nil {
 	// 	return fmt.Errorf("creating gzip writer: %w", err)
 	// }
-	// rc = &readCounter{Reader: conn}
+	rc = &readCounter{Reader: conn}
 	// r := newLazyReader(func() (io.Reader, error) {
 	// 	// return gzip.NewReader(rc)
 	// 	return flate.NewReader(rc), nil
 	// })
-	// a.conn = readWriter{
-	// 	Reader: r,
-	// 	Writer: zw,
-	// }
-	a.conn = conn
+	a.conn = readWriter{
+		Reader: rc,
+		Writer: conn,
+	}
 
 	err = a.hello()
 	if err != nil {
