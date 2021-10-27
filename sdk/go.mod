@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/google/gofuzz v1.2.0
 	github.com/google/uuid v1.2.0
+	github.com/klauspost/compress v1.13.6
 	github.com/rs/cors v0.0.0-20160617231935-a62a804a8a00
 	github.com/stellar/go v0.0.0-20211019190220-c47964999c2a
 	github.com/stretchr/objx v0.3.0 // indirect

@@ -1,10 +1,11 @@
 package agent
 
 import (
-	"compress/gzip"
 	"fmt"
 	"io"
 	"net"
+
+	"github.com/klauspost/compress/flate"
 )
 
 func (a *Agent) ServeTCP(addr string) error {
@@ -21,15 +22,15 @@ func (a *Agent) ServeTCP(addr string) error {
 	}
 	fmt.Fprintf(a.logWriter, "accepted connection from %v\n", conn.RemoteAddr())
 
-	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
-	// zw, err := flate.NewWriter(conn, flate.BestSpeed)
+	// zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	zw, err := flate.NewWriter(conn, flate.BestSpeed)
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
 	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(rc)
-		// return flate.NewReader(rc), nil
+		// return gzip.NewReader(rc)
+		return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
@@ -55,15 +56,15 @@ func (a *Agent) ConnectTCP(addr string) error {
 	}
 	fmt.Fprintf(a.logWriter, "connected to %v\n", conn.RemoteAddr())
 
-	zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
-	// zw, err := flate.NewWriter(conn, flate.BestSpeed)
+	// zw, err := gzip.NewWriterLevel(conn, gzip.BestSpeed)
+	zw, err := flate.NewWriter(conn, flate.BestSpeed)
 	if err != nil {
 		return fmt.Errorf("creating gzip writer: %w", err)
 	}
 	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(rc)
-		// return flate.NewReader(rc), nil
+		// return gzip.NewReader(rc)
+		return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
 		Reader: r,
