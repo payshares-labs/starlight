@@ -17,6 +17,7 @@ require (
 	github.com/go-errors/errors v0.0.0-20150906023321-a41850380601 // indirect
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
+	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
 	github.com/manucorporat/sse v0.0.0-20160126180136-ee05b128a739 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
