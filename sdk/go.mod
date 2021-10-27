@@ -9,6 +9,7 @@ require (
 	github.com/stellar/go v0.0.0-20211019190220-c47964999c2a
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
+	github.com/vmihailenco/msgpack v4.0.4+incompatible
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
@@ -17,6 +18,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi v4.0.3+incompatible // indirect
 	github.com/go-errors/errors v0.0.0-20150906023321-a41850380601 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
@@ -29,4 +31,6 @@ require (
 	github.com/stellar/go-xdr v0.0.0-20201028102745-f80a23dac78a // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/protobuf v1.26.0 // indirect
 )

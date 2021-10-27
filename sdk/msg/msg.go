@@ -1,11 +1,11 @@
 package msg
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/stellar/experimental-payment-channels/sdk/state"
 	"github.com/stellar/go/keypair"
+	"github.com/vmihailenco/msgpack"
 )
 
 type Type int
@@ -40,14 +40,14 @@ type Hello struct {
 	Signer        keypair.FromAddress
 }
 
-type Encoder = json.Encoder
+type Encoder = msgpack.Encoder
 
 func NewEncoder(w io.Writer) *Encoder {
-	return json.NewEncoder(w)
+	return msgpack.NewEncoder(w)
 }
 
-type Decoder = json.Decoder
+type Decoder = msgpack.Decoder
 
 func NewDecoder(r io.Reader) *Decoder {
-	return json.NewDecoder(r)
+	return msgpack.NewDecoder(r)
 }
