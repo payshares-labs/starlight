@@ -28,7 +28,7 @@ func (a *Agent) ServeTCP(addr string) error {
 	}
 	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(conn)
+		return gzip.NewReader(rc)
 		// return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
@@ -62,7 +62,7 @@ func (a *Agent) ConnectTCP(addr string) error {
 	}
 	rc = &readCounter{Reader: conn}
 	r := newLazyReader(func() (io.Reader, error) {
-		return gzip.NewReader(conn)
+		return gzip.NewReader(rc)
 		// return flate.NewReader(rc), nil
 	})
 	a.conn = readWriter{
